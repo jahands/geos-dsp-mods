@@ -367,7 +367,11 @@ describe.concurrent('DSP archive validation', { timeout: 60_000 }, () => {
 			fs.writeFile(path.join(project, 'Example.csproj'), '<Project Sdk="Microsoft.NET.Sdk" />'),
 			fs.writeFile(
 				path.join(project, 'package.json'),
-				JSON.stringify({ name: 'example', thunderstore: { pluginGuid: 'example.main' } })
+				JSON.stringify({
+					name: 'example',
+					version: '1.2.3',
+					thunderstore: { pluginGuid: 'example.main' },
+				})
 			),
 		])
 		const sdkDirectory = sdks

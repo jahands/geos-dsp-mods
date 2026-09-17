@@ -15,9 +15,6 @@ buildCmd
 		const name = await getDspProjectName()
 		const csproj = `${name}.csproj`
 		const { version, thunderstore } = await getPackageJson()
-		if (!version) {
-			throw cliError('package.json needs a version to stamp into the plugin and manifest')
-		}
 
 		// macOS path_helper puts a bare /usr/local/share/dotnet host (no SDK) ahead of
 		// mise's dotnet-root on PATH, so run the host from DOTNET_ROOT when mise sets it
