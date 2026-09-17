@@ -14,7 +14,10 @@ buildCmd
 	.action(async () => {
 		const name = await getDspProjectName()
 		const csproj = `${name}.csproj`
-		const { version, thunderstore } = await getPackageJson()
+		const { version: packageVersion, thunderstore } = await getPackageJson()
+		const manifest = ThunderstoreManifest.parse(await fs.readJson('manifest.json'))
+		// vendored mods keep upstream's version in manifest.json and source; ours take it from package.json
+		const version = manifest.version_number ?? packageVersion
 
 		// macOS path_helper puts a bare /usr/local/share/dotnet host (no SDK) ahead of
 		// mise's dotnet-root on PATH, so run the host from DOTNET_ROOT when mise sets it
@@ -22,13 +25,12 @@ buildCmd
 		await $({
 			stdio: 'inherit',
 			verbose: true,
-		})`${dotnet} build ${csproj} -c Release -p:Version=${version}`
+		})`${dotnet} build ${csproj} -c Release ${manifest.version_number ? [] : [`-p:Version=${version}`]}`
 
 		const outDir = 'bin/Release/net472'
 		const bundleDir = `dist/${name}`
 		await fs.rm(bundleDir, { recursive: true, force: true })
 		await fs.mkdir(bundleDir, { recursive: true })
-		const manifest = ThunderstoreManifest.parse(await fs.readJson('manifest.json'))
 		await Promise.all([
 			fs.copy(`${outDir}/${name}.dll`, `${bundleDir}/${name}.dll`),
 			fs.copy('README.md', `${bundleDir}/README.md`),
