@@ -1,7 +1,9 @@
 {
 	"name": "@repo/dsp-mod-geosbelttweaks",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"private": true,
+	"description": "Geo's belt tweaks for Dyson Sphere Program",
+	"sideEffects": false,
 	"scripts": {
 		"build": "runx build dotnet-dsp"
 	},
