@@ -5,6 +5,7 @@ import { assert, test as baseTest, describe, expect, vi } from 'vitest'
 
 import { validateDspIcon } from './dsp'
 
+import type { PackageJson } from '../workspace/package-json'
 import type { DspArchiveValidationOptions, ThunderstoreManifest } from './dsp'
 
 const dotnet = process.env.DOTNET_ROOT ? path.join(process.env.DOTNET_ROOT, 'dotnet') : 'dotnet'
@@ -371,7 +372,7 @@ describe.concurrent('DSP archive validation', { timeout: 60_000 }, () => {
 					name: 'example',
 					version: '1.2.3',
 					thunderstore: { pluginGuid: 'example.main' },
-				})
+				} satisfies PackageJson)
 			),
 		])
 		const sdkDirectory = sdks
