@@ -1,0 +1,23 @@
+{
+	"name": "@repo/tools",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"bin": {
+		"runx": "bin/runx"
+	},
+	"scripts": {
+		"check:types": "tsc --noEmit",
+		"test": "bun test"
+	},
+	"dependencies": {
+		"@commander-js/extra-typings": "14.0.0",
+		"sharp": "0.35.4",
+		"zx": "8.8.5"
+	},
+	"devDependencies": {
+		"@types/bun": "1.4.2",
+		"@types/fs-extra": "11.0.4",
+		"typescript": "6.0.2"
+	}
+}

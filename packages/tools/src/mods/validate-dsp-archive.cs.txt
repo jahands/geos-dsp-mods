@@ -1,0 +1,204 @@
+#:property PublishAot=false
+
+using System.IO.Compression;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+
+try
+{
+    var options = JsonSerializer.Deserialize<ValidationOptions>(args.Single())
+        ?? throw new InvalidDataException("Missing validation options");
+
+    using var archive = ZipFile.OpenRead(options.ArchivePath);
+    var files = new Dictionary<string, ZipArchiveEntry>(StringComparer.Ordinal);
+    var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    foreach (var entry in archive.Entries)
+    {
+        var name = entry.FullName;
+
+        Require(
+            !name.StartsWith('/') && !name.Contains('\\') && !name.Contains(':') &&
+                !name.Any(char.IsControl) &&
+                name.TrimEnd('/').Split('/').All(part => part.Length > 0 && part != "." && part != ".."),
+            $"Unsafe archive path: {name}");
+        Require(names.Add(name.TrimEnd('/')), $"Duplicate archive path: {name}");
+        Require(((entry.ExternalAttributes >> 16) & 0xf000) != 0xa000, $"Symlink in archive: {name}");
+
+        if (name.EndsWith('/'))
+        {
+            continue;
+        }
+
+        Require(
+            !Regex.IsMatch(
+                Path.GetFileName(name),
+                @"^(Assembly-CSharp.*|UnityEngine.*|Unity\..*|BepInEx.*|0Harmony|HarmonyX|MonoMod.*|Mono\.Cecil.*|mscorlib|netstandard)\.dll$",
+                RegexOptions.IgnoreCase),
+            $"Game or loader-provided assembly in archive: {name}");
+        Require(options.AllowedFiles.Contains(name, StringComparer.Ordinal), $"Unexpected archive file: {name}");
+
+        files.Add(name, entry);
+
+        using var contents = entry.Open();
+        contents.CopyTo(Stream.Null);
+    }
+
+    foreach (var name in options.AllowedFiles)
+    {
+        Require(files.ContainsKey(name), $"Missing archive file: {name}");
+    }
+
+    var utf8 = new UTF8Encoding(false, true);
+    using var manifest = JsonDocument.Parse(utf8.GetString(Read(files["manifest.json"])).TrimStart('\uFEFF'));
+    var root = manifest.RootElement;
+
+    var packageName = root.GetProperty("name").GetString() ?? "";
+    Require(Regex.IsMatch(packageName, @"\A[a-zA-Z0-9_]{1,128}\z"), "Invalid manifest name");
+
+    var version = root.GetProperty("version_number").GetString() ?? "";
+    Require(
+        Regex.IsMatch(version, @"\A(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\z"),
+        "Manifest version_number must be major.minor.patch");
+
+    var description = root.GetProperty("description").GetString();
+    Require(
+        description != null && description.EnumerateRunes().Count() <= 250,
+        "Manifest description must be at most 250 characters");
+
+    var website = root.GetProperty("website_url").GetString();
+    Require(
+        website != null && (website == "" ||
+            Uri.TryCreate(website, UriKind.Absolute, out var uri) && (uri.Scheme == "http" || uri.Scheme == "https")),
+        "Manifest website_url must be empty or an HTTP(S) URL");
+
+    foreach (var dependency in root.GetProperty("dependencies").EnumerateArray())
+    {
+        Require(
+            Regex.IsMatch(
+                dependency.GetString() ?? "",
+                @"\A[a-zA-Z0-9_]+-[a-zA-Z0-9_]+-(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\z"),
+            $"Invalid Thunderstore dependency: {dependency}");
+    }
+
+    Require(!string.IsNullOrWhiteSpace(utf8.GetString(Read(files["README.md"]))), "README.md must be nonempty UTF-8");
+
+    using var pluginStream = new MemoryStream(Read(files[$"{options.PluginName}.dll"]));
+    using var pe = new PEReader(pluginStream);
+    Require(pe.HasMetadata, "Plugin DLL has no managed metadata");
+
+    var metadata = pe.GetMetadataReader();
+    var plugins = new List<PluginInfo>();
+
+    foreach (var typeHandle in metadata.TypeDefinitions)
+    {
+        var type = metadata.GetTypeDefinition(typeHandle);
+
+        foreach (var handle in type.GetCustomAttributes())
+        {
+            var attribute = metadata.GetCustomAttribute(handle);
+            EntityHandle attributeType;
+
+            if (attribute.Constructor.Kind == HandleKind.MemberReference)
+            {
+                attributeType = metadata.GetMemberReference((MemberReferenceHandle)attribute.Constructor).Parent;
+            }
+            else if (attribute.Constructor.Kind == HandleKind.MethodDefinition)
+            {
+                attributeType = metadata.GetMethodDefinition((MethodDefinitionHandle)attribute.Constructor).GetDeclaringType();
+            }
+            else
+            {
+                continue;
+            }
+
+            string attributeName;
+            string attributeNamespace;
+
+            if (attributeType.Kind == HandleKind.TypeReference)
+            {
+                var reference = metadata.GetTypeReference((TypeReferenceHandle)attributeType);
+                attributeName = metadata.GetString(reference.Name);
+                attributeNamespace = metadata.GetString(reference.Namespace);
+            }
+            else if (attributeType.Kind == HandleKind.TypeDefinition)
+            {
+                var definition = metadata.GetTypeDefinition((TypeDefinitionHandle)attributeType);
+                attributeName = metadata.GetString(definition.Name);
+                attributeNamespace = metadata.GetString(definition.Namespace);
+            }
+            else
+            {
+                continue;
+            }
+
+            if (attributeNamespace != "BepInEx" || attributeName != "BepInPlugin")
+            {
+                continue;
+            }
+
+            var blob = metadata.GetBlobReader(attribute.Value);
+            Require(blob.ReadUInt16() == 1, "Invalid BepInPlugin attribute blob");
+
+            var guid = blob.ReadSerializedString();
+            var displayName = blob.ReadSerializedString();
+            var pluginVersion = blob.ReadSerializedString();
+
+            Require(
+                !string.IsNullOrWhiteSpace(guid) && !string.IsNullOrWhiteSpace(displayName) &&
+                    !string.IsNullOrWhiteSpace(pluginVersion),
+                "Incomplete BepInPlugin metadata");
+
+            plugins.Add(new PluginInfo(guid!, pluginVersion!));
+        }
+    }
+
+    var primary = options.PluginGuid == null
+        ? plugins
+        : plugins.Where(plugin => plugin.Guid == options.PluginGuid).ToList();
+
+    Require(
+        primary.Count == 1,
+        options.PluginGuid == null
+            ? $"Expected one BepInPlugin, found {plugins.Count}; set thunderstore.pluginGuid for a multi-plugin assembly"
+            : $"Expected one BepInPlugin matching thunderstore.pluginGuid {options.PluginGuid}, found {primary.Count}");
+    Require(
+        primary[0].Version == version,
+        $"Plugin {primary[0].Guid} version {primary[0].Version} does not match manifest version {version}");
+
+    Console.WriteLine(JsonSerializer.Serialize(new
+    {
+        icon = Convert.ToBase64String(Read(files["icon.png"])),
+        message = $"Validated {options.ArchivePath}: {files.Count} files, {primary[0].Guid} {version}"
+    }));
+
+    return 0;
+}
+catch (Exception err)
+{
+    Console.Error.WriteLine($"DSP archive validation failed: {err.Message}");
+    return 1;
+}
+
+static byte[] Read(ZipArchiveEntry entry)
+{
+    using var contents = entry.Open();
+    using var bytes = new MemoryStream();
+    contents.CopyTo(bytes);
+
+    return bytes.ToArray();
+}
+
+static void Require(bool condition, string message)
+{
+    if (!condition)
+    {
+        throw new InvalidDataException(message);
+    }
+}
+
+record ValidationOptions(string ArchivePath, string PluginName, string? PluginGuid, string[] AllowedFiles);
+record PluginInfo(string Guid, string Version);

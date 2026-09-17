@@ -1,0 +1,10 @@
+node_modules/
+.turbo/
+[Bb]in/
+[Oo]bj/
+dist/
+!packages/tools/bin/
+!packages/tools/src/bin/
+.idea/
+*.user
+.DS_Store

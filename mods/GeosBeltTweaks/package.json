@@ -1,0 +1,11 @@
+{
+	"name": "@repo/dsp-mod-geosbelttweaks",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"build": "runx build dotnet-dsp"
+	},
+	"devDependencies": {
+		"@repo/tools": "workspace:*"
+	}
+}

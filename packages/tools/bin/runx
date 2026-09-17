@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+runx_path="$(realpath "$(dirname "$0")/../src/bin/runx.cmd.ts")"
+exec bun "$runx_path" "$@"
