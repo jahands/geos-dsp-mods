@@ -2,22 +2,29 @@
 	"name": "@repo/tools",
 	"version": "0.1.0",
 	"private": true,
+	"sideEffects": false,
 	"type": "module",
-	"bin": {
-		"runx": "bin/runx"
+	"directories": {
+		"bin": "bin"
 	},
 	"scripts": {
-		"check:types": "tsc --noEmit",
-		"test": "bun test"
+		"check:types": "run-tsc",
+		"test": "run-vitest"
 	},
 	"dependencies": {
 		"@commander-js/extra-typings": "14.0.0",
-		"sharp": "0.35.4",
-		"zx": "8.8.5"
-	},
-	"devDependencies": {
+		"@jahands/cli-tools": "0.11.4",
 		"@types/bun": "1.4.2",
 		"@types/fs-extra": "11.0.4",
-		"typescript": "6.0.2"
+		"commander": "14.0.0",
+		"empathic": "2.0.0",
+		"llm-tools": "0.2.6",
+		"memoize-one": "6.0.0",
+		"msw": "2.15.0",
+		"sharp": "0.35.4",
+		"typescript": "6.0.2",
+		"vitest": "4.1.11",
+		"zod": "4.5.4",
+		"zx": "8.8.5"
 	}
 }

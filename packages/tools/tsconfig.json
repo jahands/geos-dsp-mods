@@ -1,12 +1,21 @@
 {
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules/", "dist/"],
 	"compilerOptions": {
+		"lib": ["ESNext"],
 		"target": "ESNext",
-		"module": "Preserve",
+		"module": "ESNext",
+		"moduleDetection": "force",
+		"jsx": "react-jsx",
 		"moduleResolution": "Bundler",
-		"strict": true,
+		"allowImportingTsExtensions": true,
+		"allowSyntheticDefaultImports": true,
+		"verbatimModuleSyntax": true,
+		"noEmit": true,
 		"skipLibCheck": true,
-		"types": ["bun"],
-		"noEmit": true
-	},
-	"include": ["src/**/*.ts"]
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": ["@types/bun"]
+	}
 }

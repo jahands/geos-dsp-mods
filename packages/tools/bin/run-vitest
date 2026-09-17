@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+
+if test -f ./vitest.config.ts; then
+	vitest run --testTimeout=15000 --maxConcurrency=20 "$@"
+fi
+if test -f ./vitest.config.node.ts; then
+	vitest run --testTimeout=15000 --maxConcurrency=20 -c ./vitest.config.node.ts "$@"
+fi
