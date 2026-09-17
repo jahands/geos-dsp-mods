@@ -1,10 +1,10 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"globalDependencies": ["LICENSE", "packages/tools/src/**"],
-	"globalEnv": ["DOTNET_ROOT"],
+	"globalPassThroughEnv": ["DOTNET_ROOT"],
 	"tasks": {
 		"build": {
-			"outputs": ["dist/**"]
+			"outputs": ["bin/**", "obj/**", "dist/**"]
 		},
 		"check:types": {},
 		"test": {}

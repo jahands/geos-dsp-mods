@@ -1,14 +1,16 @@
-import { $, fs, glob, os, path } from 'zx'
+import * as z from 'zod'
+import { $, echo, fs, glob, os, path } from 'zx'
 
 import { repoRoot } from './build'
 
 const namespace = 'Geostyx'
 
-export async function isPublished(name: string, version: string): Promise<boolean> {
-	if (!/^[a-zA-Z0-9_]+$/.test(name) || !/^\d+\.\d+\.\d+$/.test(version)) {
-		throw new Error('Invalid Thunderstore name or version')
-	}
+const Manifest = z.object({
+	name: z.string(),
+	version_number: z.string(),
+})
 
+export async function isPublished(name: string, version: string): Promise<boolean> {
 	const response = await fetch(
 		`https://thunderstore.io/api/experimental/package/${namespace}/${name}/${version}/`,
 		{ signal: AbortSignal.timeout(30_000) }
@@ -22,16 +24,6 @@ export async function isPublished(name: string, version: string): Promise<boolea
 		throw new Error(`Thunderstore version lookup failed: ${response.status}`)
 	}
 
-	const result = (await response.json()) as {
-		namespace: string
-		name: string
-		version_number: string
-	}
-
-	if (result.namespace !== namespace || result.name !== name || result.version_number !== version) {
-		throw new Error('Unexpected Thunderstore version response')
-	}
-
 	return true
 }
 
@@ -40,28 +32,27 @@ export async function publishMods(): Promise<void> {
 		throw new Error('Set TCLI_AUTH_TOKEN')
 	}
 
-	const projects = await glob('mods/*/*.csproj', { cwd: repoRoot })
+	const projects = (await glob('mods/*/*.csproj', { cwd: repoRoot })).sort()
 
-	if (!projects.length) {
+	if (projects.length === 0) {
 		throw new Error('No mod projects found')
 	}
 
-	for (const project of projects.sort()) {
+	for (const project of projects) {
+		const mod = path.join(repoRoot, path.dirname(project))
 		const name = path.basename(project, '.csproj')
-		const archive = path.join(repoRoot, path.dirname(project), 'dist', `${name}.zip`)
+		const archive = path.join(mod, 'dist', `${name}.zip`)
 
-		const manifest = JSON.parse(
-			await $({ quiet: true })`unzip -p ${archive} manifest.json`.text()
-		) as {
-			name: string
-			version_number: string
-			description: string
-			website_url: string
-			dependencies: string[]
+		if (!(await fs.pathExists(archive))) {
+			throw new Error(
+				`Missing ${archive}: add ${path.dirname(project)}/package.json so turbo builds it`
+			)
 		}
 
+		const manifest = Manifest.parse(await fs.readJson(path.join(mod, 'manifest.json')))
+
 		if (await isPublished(manifest.name, manifest.version_number)) {
-			console.log(`Already published: ${namespace}-${manifest.name}-${manifest.version_number}`)
+			echo(`Already published: ${namespace}-${manifest.name}-${manifest.version_number}`)
 			continue
 		}
 
@@ -76,18 +67,9 @@ export async function publishMods(): Promise<void> {
 					'[config]',
 					'schemaVersion = "0.0.1"',
 					'[package]',
-					`namespace = ${JSON.stringify(namespace)}`,
-					`name = ${JSON.stringify(manifest.name)}`,
-					`versionNumber = ${JSON.stringify(manifest.version_number)}`,
-					`description = ${JSON.stringify(manifest.description)}`,
-					`websiteUrl = ${JSON.stringify(manifest.website_url)}`,
-					'containsNsfwContent = false',
-					'[package.dependencies]',
-					...manifest.dependencies.map((dependency) => {
-						const separator = dependency.lastIndexOf('-')
-						if (separator < 1) throw new Error(`Invalid dependency: ${dependency}`)
-						return `${JSON.stringify(dependency.slice(0, separator))} = ${JSON.stringify(dependency.slice(separator + 1))}`
-					}),
+					`namespace = "${namespace}"`,
+					`name = "${manifest.name}"`,
+					`versionNumber = "${manifest.version_number}"`,
 					'[publish]',
 					'communities = ["dyson-sphere-program"]',
 					'',

@@ -6,30 +6,22 @@ Mods for Dyson Sphere Program, released under the [MIT license](LICENSE).
 
 ## Development
 
-Install Bun, pnpm, the .NET 10 SDK, and `zip`/`unzip`, then run:
+Install Bun, pnpm, the .NET 10 SDK, and `zip`, then run:
 
 ```sh
 pnpm install
-bun turbo build check:types test
+bun run check
+bun turbo build
 ```
 
-Mods live in `mods/`; release commands and archive validation live in
-`packages/tools`. Each mod's validated Thunderstore ZIP is written to
-`mods/<mod>/dist/<mod>.zip`. Assets are committed in each mod's `img/` directory.
-NuGet supplies compile references; builds do not require the game installed.
+Each mod's validated Thunderstore ZIP is written to `mods/<mod>/dist/<mod>.zip`. NuGet supplies
+compile references; builds do not require the game installed.
 
 ## Releases
 
-The author develops mod source privately and synchronizes it here through pull
-requests. Only mod source and assets are synchronized. This repository maintains
-its own workspace manifests, tooling, workflows, and documentation.
+Mod source and assets under `mods/` are synchronized from a private repository through pull
+requests. This repository owns everything else.
 
-Pull requests build and validate packages. Merging to `main` uploads versions
-missing from Thunderstore. Update both `.csproj` and `manifest.json` versions for
-new releases. Published versions are skipped; source or asset changes without a
-version bump cannot replace an existing upload. Rerun the Release workflow to
-retry interrupted uploads.
-
-Publishing targets the `Geostyx` team and requires the Actions secret
-`THUNDERSTORE_TOKEN`. Locally, `bun run release` uses `TCLI_AUTH_TOKEN`,
-with Thunderstore CLI 0.2.4 installed.
+Merging to `main` uploads versions missing from Thunderstore to the `Geostyx` namespace using the
+`THUNDERSTORE_TOKEN` Actions secret. Bump both `.csproj` and `manifest.json` versions to release.
+Locally, `bun run release` uses `TCLI_AUTH_TOKEN` with Thunderstore CLI 0.2.4 installed.

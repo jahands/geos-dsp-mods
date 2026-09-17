@@ -5,11 +5,13 @@
 	"packageManager": "pnpm@12.4.1",
 	"scripts": {
 		"build": "turbo build",
-		"check": "turbo check:types test",
+		"check": "turbo check:types test && prettier --check .",
+		"format": "prettier --write .",
 		"release": "turbo build && runx release"
 	},
 	"devDependencies": {
 		"@repo/tools": "workspace:*",
+		"prettier": "3.9.6",
 		"turbo": "2.10.12"
 	}
 }
