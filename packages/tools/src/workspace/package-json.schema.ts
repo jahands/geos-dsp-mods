@@ -20,6 +20,7 @@ export type PackageJson = z.infer<typeof PackageJson>
 export const PackageJson = z
 	.object({
 		name: z.string().trim().min(1),
+		version: z.string().optional(),
 		thunderstore: ThunderstoreConfig.optional(),
 	})
 	.loose()
