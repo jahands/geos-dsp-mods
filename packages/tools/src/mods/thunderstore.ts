@@ -43,12 +43,12 @@ export async function publishMods(): Promise<void> {
 		const archive = path.join(mod, 'dist', `${name}.zip`)
 
 		if (!(await fs.pathExists(archive))) {
-			throw cliError(
-				`Missing ${archive}: add ${path.dirname(project)}/package.json so turbo builds it`
-			)
+			throw cliError(`Missing ${archive}`)
 		}
 
-		const manifest = Manifest.parse(await fs.readJson(path.join(mod, 'manifest.json')))
+		const manifest = Manifest.parse(
+			await fs.readJson(path.join(mod, 'dist', name, 'manifest.json'))
+		)
 
 		if (await isPublished(manifest.name, manifest.version_number)) {
 			echo(

@@ -13,13 +13,16 @@ export type DspArchiveValidationOptions = {
 	AllowedFiles: string[]
 }
 
-export type ThunderstoreManifest = {
-	name: string
-	version_number: string
-	description: string
-	website_url: string
-	dependencies: string[]
-}
+export type ThunderstoreManifest = z.infer<typeof ThunderstoreManifest>
+export const ThunderstoreManifest = z
+	.object({
+		name: z.string(),
+		version_number: z.string().optional(),
+		description: z.string(),
+		website_url: z.string(),
+		dependencies: z.array(z.string()),
+	})
+	.loose()
 
 const DspArchiveValidationResult = z.object({
 	icon: z.string(),
