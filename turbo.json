@@ -1,12 +1,22 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"globalDependencies": ["LICENSE", "packages/tools/src/**"],
-	"globalPassThroughEnv": ["DOTNET_ROOT"],
+	"globalPassThroughEnv": ["DOTNET_ROOT", "FORCE_COLOR"],
 	"tasks": {
-		"build": {
-			"outputs": ["bin/**", "obj/**", "dist/**"]
+		"topo": {
+			"dependsOn": ["^topo"]
 		},
-		"check:types": {},
-		"test": {}
+		"build": {
+			"dependsOn": ["^build", "topo"],
+			"outputs": ["bin/**", "obj/**", "dist/**"],
+			"outputLogs": "new-only"
+		},
+		"check:types": {
+			"dependsOn": ["topo"],
+			"outputLogs": "new-only"
+		},
+		"test": {
+			"dependsOn": ["topo"],
+			"outputLogs": "new-only"
+		}
 	}
 }

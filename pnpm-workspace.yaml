@@ -1,3 +1,7 @@
 packages:
   - mods/*
   - packages/*
+
+allowBuilds:
+  msw: true
+  sharp: true

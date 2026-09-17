@@ -1,8 +1,8 @@
 {
 	"name": "geos-dsp-mods",
 	"private": true,
+	"sideEffects": false,
 	"type": "module",
-	"packageManager": "pnpm@12.4.1",
 	"scripts": {
 		"build": "turbo build",
 		"check": "turbo check:types test && prettier --check .",
@@ -10,8 +10,11 @@
 		"release": "turbo build && runx release"
 	},
 	"devDependencies": {
+		"@ianvs/prettier-plugin-sort-imports": "4.7.1",
 		"@repo/tools": "workspace:*",
 		"prettier": "3.9.6",
+		"prettier-plugin-packagejson": "2.5.20",
 		"turbo": "2.10.12"
-	}
+	},
+	"packageManager": "pnpm@12.4.1"
 }

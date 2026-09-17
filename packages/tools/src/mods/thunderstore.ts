@@ -1,7 +1,7 @@
+import { cliError, getEnv } from '@jahands/cli-tools'
 import * as z from 'zod'
-import { $, echo, fs, glob, os, path } from 'zx'
 
-import { repoRoot } from './build'
+import { getRepoRoot } from '../core/repo-paths'
 
 const namespace = 'Geostyx'
 
@@ -21,21 +21,20 @@ export async function isPublished(name: string, version: string): Promise<boolea
 	}
 
 	if (!response.ok) {
-		throw new Error(`Thunderstore version lookup failed: ${response.status}`)
+		throw cliError(`Thunderstore version lookup failed: ${response.status}`)
 	}
 
 	return true
 }
 
 export async function publishMods(): Promise<void> {
-	if (!process.env.TCLI_AUTH_TOKEN) {
-		throw new Error('Set TCLI_AUTH_TOKEN')
-	}
+	getEnv('TCLI_AUTH_TOKEN')
 
+	const repoRoot = getRepoRoot()
 	const projects = (await glob('mods/*/*.csproj', { cwd: repoRoot })).sort()
 
 	if (projects.length === 0) {
-		throw new Error('No mod projects found')
+		throw cliError('No mod projects found')
 	}
 
 	for (const project of projects) {
@@ -44,7 +43,7 @@ export async function publishMods(): Promise<void> {
 		const archive = path.join(mod, 'dist', `${name}.zip`)
 
 		if (!(await fs.pathExists(archive))) {
-			throw new Error(
+			throw cliError(
 				`Missing ${archive}: add ${path.dirname(project)}/package.json so turbo builds it`
 			)
 		}
@@ -52,7 +51,9 @@ export async function publishMods(): Promise<void> {
 		const manifest = Manifest.parse(await fs.readJson(path.join(mod, 'manifest.json')))
 
 		if (await isPublished(manifest.name, manifest.version_number)) {
-			echo(`Already published: ${namespace}-${manifest.name}-${manifest.version_number}`)
+			echo(
+				chalk.blue(`Already published: ${namespace}-${manifest.name}-${manifest.version_number}`)
+			)
 			continue
 		}
 
@@ -76,7 +77,7 @@ export async function publishMods(): Promise<void> {
 				].join('\n')
 			)
 
-			await $`tcli publish --config-path ${config} --file ${archive}`
+			await $({ verbose: true })`tcli publish --config-path ${config} --file ${archive}`
 		} finally {
 			await fs.remove(tmpDir)
 		}

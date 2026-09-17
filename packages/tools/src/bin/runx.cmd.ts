@@ -1,23 +1,21 @@
-import { Command } from '@commander-js/extra-typings'
-import { $ } from 'zx'
+import 'zx/globals'
 
-import { buildDspMod } from '../mods/build'
-import { publishMods } from '../mods/release'
+import { program } from '@commander-js/extra-typings'
+import { catchProcessError } from '@jahands/cli-tools'
 
-$.verbose = true
-
-const program = new Command('runx')
-
-program
-	.command('build')
-	.command('dotnet-dsp')
-	.action(async () => {
-		await buildDspMod(process.cwd())
-	})
+import { buildCmd } from '../cmd/build.cmd'
+import { checkCmd } from '../cmd/check.cmd'
+import { releaseCmd } from '../cmd/release.cmd'
 
 program
-	.command('release')
-	.description('Upload validated archives for unpublished versions')
-	.action(publishMods)
+	.name('runx')
+	.description("A CLI for scripts that automate Geo's DSP mods")
 
-await program.parseAsync()
+	.addCommand(buildCmd)
+	.addCommand(checkCmd)
+	.addCommand(releaseCmd)
+
+	// don't hang for unresolved promises
+	.hook('postAction', () => process.exit(0))
+	.parseAsync()
+	.catch(catchProcessError())
