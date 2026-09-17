@@ -30,6 +30,6 @@ new releases. Published versions are skipped; source or asset changes without a
 version bump cannot replace an existing upload. Rerun the Release workflow to
 retry interrupted uploads.
 
-Publishing requires the Actions variable `THUNDERSTORE_NAMESPACE` and secret
-`THUNDERSTORE_TOKEN`. Locally, `bun run release` uses `THUNDERSTORE_NAMESPACE`
-and `TCLI_AUTH_TOKEN`, with Thunderstore CLI 0.2.4 installed.
+Publishing targets the `Geostyx` team and requires the Actions secret
+`THUNDERSTORE_TOKEN`. Locally, `bun run release` uses `TCLI_AUTH_TOKEN`,
+with Thunderstore CLI 0.2.4 installed.

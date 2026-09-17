@@ -156,23 +156,16 @@ try
         }
     }
 
-    var primary = options.PluginGuid == null
-        ? plugins
-        : plugins.Where(plugin => plugin.Guid == options.PluginGuid).ToList();
-
+    Require(plugins.Count == 1, $"Expected one BepInPlugin, found {plugins.Count}");
+    var plugin = plugins.Single();
     Require(
-        primary.Count == 1,
-        options.PluginGuid == null
-            ? $"Expected one BepInPlugin, found {plugins.Count}; set thunderstore.pluginGuid for a multi-plugin assembly"
-            : $"Expected one BepInPlugin matching thunderstore.pluginGuid {options.PluginGuid}, found {primary.Count}");
-    Require(
-        primary[0].Version == version,
-        $"Plugin {primary[0].Guid} version {primary[0].Version} does not match manifest version {version}");
+        plugin.Version == version,
+        $"Plugin {plugin.Guid} version {plugin.Version} does not match manifest version {version}");
 
     Console.WriteLine(JsonSerializer.Serialize(new
     {
         icon = Convert.ToBase64String(Read(files["icon.png"])),
-        message = $"Validated {options.ArchivePath}: {files.Count} files, {primary[0].Guid} {version}"
+        message = $"Validated {options.ArchivePath}: {files.Count} files, {plugin.Guid} {version}"
     }));
 
     return 0;
@@ -200,5 +193,5 @@ static void Require(bool condition, string message)
     }
 }
 
-record ValidationOptions(string ArchivePath, string PluginName, string? PluginGuid, string[] AllowedFiles);
+record ValidationOptions(string ArchivePath, string PluginName, string[] AllowedFiles);
 record PluginInfo(string Guid, string Version);

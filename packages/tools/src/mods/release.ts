@@ -2,16 +2,11 @@ import { $, fs, glob, os, path } from 'zx'
 
 import { repoRoot } from './build'
 
-export async function isPublished(
-	namespace: string,
-	name: string,
-	version: string
-): Promise<boolean> {
-	if (
-		![namespace, name].every((value) => /^[a-zA-Z0-9_]+$/.test(value)) ||
-		!/^\d+\.\d+\.\d+$/.test(version)
-	) {
-		throw new Error('Invalid Thunderstore namespace, name, or version')
+const namespace = 'Geostyx'
+
+export async function isPublished(name: string, version: string): Promise<boolean> {
+	if (!/^[a-zA-Z0-9_]+$/.test(name) || !/^\d+\.\d+\.\d+$/.test(version)) {
+		throw new Error('Invalid Thunderstore name or version')
 	}
 
 	const response = await fetch(
@@ -41,10 +36,8 @@ export async function isPublished(
 }
 
 export async function publishMods(): Promise<void> {
-	const namespace = process.env.THUNDERSTORE_NAMESPACE
-
-	if (!namespace || !process.env.TCLI_AUTH_TOKEN) {
-		throw new Error('Set THUNDERSTORE_NAMESPACE and TCLI_AUTH_TOKEN')
+	if (!process.env.TCLI_AUTH_TOKEN) {
+		throw new Error('Set TCLI_AUTH_TOKEN')
 	}
 
 	const projects = await glob('mods/*/*.csproj', { cwd: repoRoot })
@@ -67,7 +60,7 @@ export async function publishMods(): Promise<void> {
 			dependencies: string[]
 		}
 
-		if (await isPublished(namespace, manifest.name, manifest.version_number)) {
+		if (await isPublished(manifest.name, manifest.version_number)) {
 			console.log(`Already published: ${namespace}-${manifest.name}-${manifest.version_number}`)
 			continue
 		}

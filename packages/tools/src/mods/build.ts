@@ -79,7 +79,6 @@ export async function buildDspMod(mod: string): Promise<void> {
 		const options = {
 			ArchivePath: archive,
 			PluginName: name,
-			PluginGuid: null,
 			AllowedFiles: Object.keys(files),
 		}
 		await $({
