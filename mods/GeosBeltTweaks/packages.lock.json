@@ -1,0 +1,90 @@
+{
+	"version": 1,
+	"dependencies": {
+		".NETFramework,Version=v4.7.2": {
+			"BepInEx.Analyzers": {
+				"type": "Direct",
+				"requested": "[1.0.8, )",
+				"resolved": "1.0.8",
+				"contentHash": "xrfNmunsPhBx+vStTxLonq/aHkRrDH77c9tG/x3m5eejrKe5B0nf7cJPRRt6x330sGI0bLaPTtygdeHUgvI3wQ=="
+			},
+			"BepInEx.Core": {
+				"type": "Direct",
+				"requested": "[5.4.17, )",
+				"resolved": "5.4.17",
+				"contentHash": "f0UCf6tZxdhPrcHAgj/wQNz5V9RAAV0elgvgaFl8wFjaEdiKLxepkxdV0Y8Xuprm+AVrQUGcaSIhTBQvpRzk+g==",
+				"dependencies": {
+					"BepInEx.BaseLib": "5.4.17",
+					"HarmonyX": "2.5.5"
+				}
+			},
+			"BepInEx.PluginInfoProps": {
+				"type": "Direct",
+				"requested": "[2.1.0, )",
+				"resolved": "2.1.0",
+				"contentHash": "VCG3QRiqNdW9ku2FEcNsbK+HKxrZmW0VxwMNyLNO7h0xGorU+C6vBHN8Qq4eAL5fU11Uks5x2uoYdqEoKD3P8A=="
+			},
+			"DysonSphereProgram.GameLibs": {
+				"type": "Direct",
+				"requested": "[0.10.34.28347-r.0, )",
+				"resolved": "0.10.34.28347-r.0",
+				"contentHash": "B2pyD8Js8xIIDZjl4JRMcqQab6ZRuboaSSrPyB2yXzXmQCZejf8eBqPshh9aqvEw83Rgvwq9vHfw4X+AFRlw7Q=="
+			},
+			"Microsoft.NETFramework.ReferenceAssemblies": {
+				"type": "Direct",
+				"requested": "[1.0.2, )",
+				"resolved": "1.0.2",
+				"contentHash": "5/cSEVld+px/CuRrbohO/djfg6++eR6zGpy88MgqloXvkj//WXWpFZyu/OpkXPN0u5m+dN/EVwLNYFUxD4h2+A==",
+				"dependencies": {
+					"Microsoft.NETFramework.ReferenceAssemblies.net472": "1.0.2"
+				}
+			},
+			"UnityEngine.Modules": {
+				"type": "Direct",
+				"requested": "[2022.3.62, )",
+				"resolved": "2022.3.62",
+				"contentHash": "zpu5dELUCFt7Rvvzp50iTrfVusJg+2gmlcaytGEoHYuIP+AOv57X272czjp+sA8N1onPo/IiHFnOEFtT9rLJBA=="
+			},
+			"BepInEx.BaseLib": {
+				"type": "Transitive",
+				"resolved": "5.4.17",
+				"contentHash": "92N4BKDiF9KO8kXbY2+zp7dHNXZP3WBKhzw7U8orcYncutD7peHtuLfUdMW4PGY/d0SsoA5eOcBeklFuh7OS8A=="
+			},
+			"HarmonyX": {
+				"type": "Transitive",
+				"resolved": "2.5.5",
+				"contentHash": "sQTQhNCwbob8JnnLsJibcorfjQGi2ziseb8uIOtyWrIv/RrbH1bJiwwX6hyLHCrgLMbzBd5Z15SukTXlmfcYLQ==",
+				"dependencies": {
+					"MonoMod.RuntimeDetour": "21.8.19.1"
+				}
+			},
+			"Microsoft.NETFramework.ReferenceAssemblies.net472": {
+				"type": "Transitive",
+				"resolved": "1.0.2",
+				"contentHash": "ryAuwkvjMC9xYQ0VXsG7ZBo62y5tBmYaCnovOL5IXfnQPQqjvJGRkLMDyUx+dnCb96UVLJv83R6XK+sRnDnaZg=="
+			},
+			"Mono.Cecil": {
+				"type": "Transitive",
+				"resolved": "0.11.4",
+				"contentHash": "IC1h5g0NeJGHIUgzM1P82ld57knhP0IcQfrYITDPXlNpMYGUrsG5TxuaWTjaeqDNQMBDNZkB8L0rBnwsY6JHuQ=="
+			},
+			"MonoMod.RuntimeDetour": {
+				"type": "Transitive",
+				"resolved": "21.8.19.1",
+				"contentHash": "fUEvDK4q9n+GAAB29vFKAsUIwhKAvZTVbn2WJemzLxbiTElutZ55ytUQxSSv6XhiRaJXrl5bSArO54PY0QNplw==",
+				"dependencies": {
+					"Mono.Cecil": "0.11.4",
+					"MonoMod.Utils": "21.8.19.1"
+				}
+			},
+			"MonoMod.Utils": {
+				"type": "Transitive",
+				"resolved": "21.8.19.1",
+				"contentHash": "HsH5TBMUdJmQtdINdYFG5a3BvCeGPezDX42qgv+h539drpNdD+qE7/NT6BtcmDI+y6VSVClFdnzcVNrOvTSfWQ==",
+				"dependencies": {
+					"Mono.Cecil": "0.11.4"
+				}
+			}
+		}
+	}
+}
