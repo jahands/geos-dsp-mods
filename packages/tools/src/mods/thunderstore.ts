@@ -13,7 +13,7 @@ const Manifest = z.object({
 export async function isPublished(name: string, version: string): Promise<boolean> {
 	// Thunderstore's CDN caches 404s for versions that were uploaded moments ago
 	const response = await fetch(
-		`https://thunderstore.io/api/experimental/package/${namespace}/${name}/${version}/?nocache=${crypto.randomUUID()}`,
+		`https://thunderstore.io/api/experimental/package/${namespace}/${name}/${version}/?ref=${Date.now()}`,
 		{ signal: AbortSignal.timeout(30_000) }
 	)
 
