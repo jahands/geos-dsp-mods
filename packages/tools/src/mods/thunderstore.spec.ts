@@ -14,9 +14,16 @@ const url = 'https://thunderstore.io/api/experimental/package/Geostyx/Example/1.
 
 describe('isPublished', () => {
 	it('only a 404 means the version needs publishing', async () => {
-		server.use(http.get(url, () => new HttpResponse(null, { status: 404 })))
+		let ref: string | null = null
+		server.use(
+			http.get(url, ({ request }) => {
+				ref = new URL(request.url).searchParams.get('ref')
+				return new HttpResponse(null, { status: 404 })
+			})
+		)
 
 		expect(await isPublished('Example', '1.0.0')).toBe(false)
+		expect(ref).toMatch(/^\d+$/)
 	})
 
 	it('skips an already published version', async () => {
