@@ -1,5 +1,12 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.3.0
+
+### Minor Changes
+
+- ea30041: feat: chain upgrade belts across tier changes to a single tier
+- ea30041: feat: remove the build range limit from chain belt upgrades
+
 ## 0.2.0
 
 ### Minor Changes

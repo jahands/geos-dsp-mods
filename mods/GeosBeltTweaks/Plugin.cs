@@ -15,6 +15,8 @@ namespace GeosBeltTweaks
         internal static ConfigEntry<bool> ShowBeltPreviewTilt = null!;
         internal static ConfigEntry<bool> ToggleBeltSurfaceHeight = null!;
         internal static ConfigEntry<bool> RememberBeltFreeAngleMode = null!;
+        internal static ConfigEntry<bool> UnlimitedChainUpgradeRange = null!;
+        internal static ConfigEntry<bool> ChainUpgradeAcrossTiers = null!;
 
         private void Awake()
         {
@@ -48,6 +50,18 @@ namespace GeosBeltTweaks
                 "RememberBeltFreeAngleMode",
                 true,
                 "Keep free-angle mode selected when reopening the belt tool."
+            );
+            UnlimitedChainUpgradeRange = Config.Bind(
+                "Building",
+                "UnlimitedChainUpgradeRange",
+                true,
+                "Chain upgrading or downgrading a belt reaches the whole belt instead of stopping at the mecha's build range. Applies immediately."
+            );
+            ChainUpgradeAcrossTiers = Config.Bind(
+                "Building",
+                "ChainUpgradeAcrossTiers",
+                true,
+                "Chain upgrading or downgrading a belt continues through tier changes and brings every segment to the tier the hovered segment ends up at. Applies immediately."
             );
             _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             try
