@@ -26,9 +26,9 @@
 			},
 			"DysonSphereProgram.GameLibs": {
 				"type": "Direct",
-				"requested": "[0.10.34.28347-r.0, )",
-				"resolved": "0.10.34.28347-r.0",
-				"contentHash": "B2pyD8Js8xIIDZjl4JRMcqQab6ZRuboaSSrPyB2yXzXmQCZejf8eBqPshh9aqvEw83Rgvwq9vHfw4X+AFRlw7Q=="
+				"requested": "[0.10.35.29088-r.0, )",
+				"resolved": "0.10.35.29088-r.0",
+				"contentHash": "R4ZwhP7ZSWvE61Un+BhrIy/NYM8ft2kbq947i/aekckr3sITIdHscTiSPq2eqLudY7GQVB/sEoI87oCLZNUOfg=="
 			},
 			"Microsoft.NETFramework.ReferenceAssemblies": {
 				"type": "Direct",
