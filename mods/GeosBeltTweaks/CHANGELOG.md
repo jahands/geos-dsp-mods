@@ -1,5 +1,15 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.5.0
+
+### Minor Changes
+
+- f109a61: feat: toggle sloping belts from their first segment with the numpad 1 key
+
+### Patch Changes
+
+- f5fad64: fix: toggle sloping from the start while holding Shift or other keys
+
 ## 0.4.0
 
 ### Minor Changes
