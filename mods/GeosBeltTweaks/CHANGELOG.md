@@ -1,5 +1,16 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.6.0
+
+### Minor Changes
+
+- 1e2cb6e: feat: remember half-grid snapping, slope from start, and free-angle mode in each save
+
+### Patch Changes
+
+- 98307a6: fix: shorten the flat first belt segment to half a cell in half-grid mode when the game rejects a sloped start
+- ba44812: fix: keep the flat first belt segment where the game rejects a sloped start
+
 ## 0.5.1
 
 ### Patch Changes
