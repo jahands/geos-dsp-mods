@@ -1,6 +1,6 @@
 {
 	"name": "@repo/dsp-mod-geosbelttweaks",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"private": true,
 	"description": "Geo's belt tweaks for Dyson Sphere Program",
 	"sideEffects": false,
