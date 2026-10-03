@@ -1,5 +1,11 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.5.1
+
+### Patch Changes
+
+- 9019c49: fix: revert toggling sloping from the start while holding Shift, which broke Shift+scroll
+
 ## 0.5.0
 
 ### Minor Changes
