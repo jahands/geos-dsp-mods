@@ -1,5 +1,18 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.4.0
+
+### Minor Changes
+
+- ce25f7d: feat: depend on CommonAPI to translate the half-grid key tip
+- ce25f7d: feat: toggle half-grid belt snapping with the backquote key
+
+## 0.3.1
+
+### Patch Changes
+
+- e36a6b1: chore: build against DysonSphereProgram.GameLibs 0.10.35.29088 from the repo feed
+
 ## 0.3.0
 
 ### Minor Changes

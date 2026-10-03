@@ -29,7 +29,16 @@ namespace GeosBeltTweaks
             if (Plugin.MatchStartingBeltHeight.Value)
             {
                 float height = __instance.startTarget.magnitude - __instance.planet.realRadius - 0.2f;
-                __instance.altitude = Mathf.Clamp(Mathf.RoundToInt(height / 1.3333333f), 0, 60);
+                if (HalfGridBeltSnapPatch.Enabled)
+                {
+                    int halfLevels = Mathf.Clamp(Mathf.RoundToInt(height / (PlanetGrid.kAltGrid / 2f)), 0, 120);
+                    __instance.altitude = halfLevels / 2;
+                    HalfGridBeltSnapPatch.HalfStep = halfLevels % 2 == 1;
+                }
+                else
+                {
+                    __instance.altitude = Mathf.Clamp(Mathf.RoundToInt(height / 1.3333333f), 0, 60);
+                }
             }
 
             if (
