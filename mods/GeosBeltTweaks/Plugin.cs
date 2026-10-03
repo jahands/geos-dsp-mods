@@ -23,6 +23,7 @@ namespace GeosBeltTweaks
         internal static ConfigEntry<bool> UnlimitedChainUpgradeRange = null!;
         internal static ConfigEntry<bool> ChainUpgradeAcrossTiers = null!;
         internal static ConfigEntry<KeyboardShortcut> ToggleHalfGridSnapKey = null!;
+        internal static ConfigEntry<KeyboardShortcut> ToggleSlopeFromStartKey = null!;
 
         private void Awake()
         {
@@ -75,9 +76,18 @@ namespace GeosBeltTweaks
                 new KeyboardShortcut(KeyCode.BackQuote),
                 "Toggle half-grid snapping while the belt tool is open. Belts snap to half grid cells, and the height keys move half a level. Applies immediately."
             );
-            ToggleHalfGridSnapKey.SettingChanged += HalfGridBeltSnapPatch.OnKeyChanged;
-            LocalizationModule.RegisterTranslation(HalfGridBeltSnapPatch.OnText, "Half-grid: on", "半格：开", "");
-            LocalizationModule.RegisterTranslation(HalfGridBeltSnapPatch.OffText, "Half-grid: off", "半格：关", "");
+            ToggleSlopeFromStartKey = Config.Bind(
+                "Building",
+                "ToggleSlopeFromStartKey",
+                new KeyboardShortcut(KeyCode.Keypad1),
+                "Toggle sloping from the start while the belt tool is open. Belts rise or fall from their first segment instead of running one segment flat first. Applies immediately."
+            );
+            ToggleHalfGridSnapKey.SettingChanged += ToggleKeyTip.HalfGrid.OnKeyChanged;
+            ToggleSlopeFromStartKey.SettingChanged += ToggleKeyTip.SlopeFromStart.OnKeyChanged;
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.HalfGrid.OnText, "Half-grid: on", "半格：开", "");
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.HalfGrid.OffText, "Half-grid: off", "半格：关", "");
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.SlopeFromStart.OnText, "Slope from start: on", "起点起坡：开", "");
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.SlopeFromStart.OffText, "Slope from start: off", "起点起坡：关", "");
             _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             try
             {
@@ -94,23 +104,33 @@ namespace GeosBeltTweaks
 
         private void Update()
         {
-            if (!ToggleHalfGridSnapKey.Value.IsDown() || VFInput.inputing || GameMain.mainPlayer?.controller.actionBuild.activeTool is not BuildTool_Path)
+            if (VFInput.inputing || GameMain.mainPlayer?.controller.actionBuild.activeTool is not BuildTool_Path)
             {
                 return;
             }
 
-            HalfGridBeltSnapPatch.Enabled = !HalfGridBeltSnapPatch.Enabled;
-            HalfGridBeltSnapPatch.HalfStep = false;
+            if (ToggleHalfGridSnapKey.Value.IsDown())
+            {
+                HalfGridBeltSnapPatch.Enabled = !HalfGridBeltSnapPatch.Enabled;
+                HalfGridBeltSnapPatch.HalfStep = false;
+            }
+
+            if (ToggleSlopeFromStartKey.Value.IsDown())
+            {
+                SlopeFromStartPatch.Enabled = !SlopeFromStartPatch.Enabled;
+            }
         }
 
         private void OnDestroy()
         {
-            ToggleHalfGridSnapKey.SettingChanged -= HalfGridBeltSnapPatch.OnKeyChanged;
+            ToggleHalfGridSnapKey.SettingChanged -= ToggleKeyTip.HalfGrid.OnKeyChanged;
+            ToggleSlopeFromStartKey.SettingChanged -= ToggleKeyTip.SlopeFromStart.OnKeyChanged;
             _harmony?.UnpatchSelf();
             _harmony = null;
             BeltPreviewTiltPatch.Release();
             ToggleBeltSurfaceHeightPatch.ClearSavedHeight();
-            HalfGridBeltSnapPatch.DestroyKeyTip();
+            ToggleKeyTip.HalfGrid.Destroy();
+            ToggleKeyTip.SlopeFromStart.Destroy();
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 
@@ -18,15 +17,6 @@ namespace GeosBeltTweaks
 
         // Raises belts half a height step above the belt tool's altitude.
         internal static bool HalfStep;
-
-        internal const string OnText = "GeosBeltTweaks half-grid snapping on";
-        internal const string OffText = "GeosBeltTweaks half-grid snapping off";
-
-        private static UIKeyTipNode? _keyTip;
-        private static string _onTip = "";
-        private static string _offTip = "";
-        private static bool _keyLabelStale;
-        private static bool _hasKey;
 
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(BuildTool_Path), nameof(BuildTool_Path.UpdateRaycast))]
@@ -345,67 +335,6 @@ namespace GeosBeltTweaks
 
             float scale = (planet.realRadius + 0.2f + (player.controller.actionBuild.pathTool.altitude + 0.5f) * PlanetGrid.kAltGrid) * 2f;
             __instance.altGridRnd.transform.localScale = new Vector3(scale, scale, scale);
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(UIKeyTips), "RegisterAllTips")]
-        private static void RegisterKeyTip(UIKeyTips __instance)
-        {
-            // The game re-registers tips when the language changes.
-            _onTip = OnText.Translate();
-            _offTip = OffText.Translate();
-            _keyTip = __instance.RegisterTip("", _offTip);
-            _keyLabelStale = true;
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(UIKeyTips), "UpdateTipDesiredState")]
-        private static void UpdateKeyTip(UIKeyTips __instance)
-        {
-            if (_keyTip == null)
-            {
-                return;
-            }
-
-            if (_keyLabelStale)
-            {
-                _keyLabelStale = false;
-                KeyboardShortcut shortcut = Plugin.ToggleHalfGridSnapKey.Value;
-                _hasKey = shortcut.MainKey != KeyCode.None;
-                byte modifier = 0;
-                foreach (KeyCode key in shortcut.Modifiers)
-                {
-                    modifier |= key switch
-                    {
-                        KeyCode.LeftShift or KeyCode.RightShift => 1,
-                        KeyCode.LeftControl or KeyCode.RightControl => 2,
-                        KeyCode.LeftAlt or KeyCode.RightAlt => 4,
-                        _ => 0,
-                    };
-                }
-
-                // Label the key the way the game labels its own key bindings.
-                _keyTip.SetKeyTip(new CombineKey((int)shortcut.MainKey, modifier, ECombineKeyAction.OnceClick, false).ToTokenString(0), _offTip);
-            }
-
-            // Show alongside the belt tool's reset-height tip.
-            _keyTip.desired = _hasKey && __instance.zeroKeyInBuildMode2.desired;
-            _keyTip.tipTextComp.text = Enabled ? _onTip : _offTip;
-        }
-
-        internal static void OnKeyChanged(object sender, EventArgs e)
-        {
-            _keyLabelStale = true;
-        }
-
-        internal static void DestroyKeyTip()
-        {
-            if (_keyTip != null)
-            {
-                _keyTip._Destroy();
-            }
-
-            _keyTip = null;
         }
     }
 }
