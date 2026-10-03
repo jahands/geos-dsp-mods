@@ -1,3 +1,4 @@
+using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -80,7 +81,7 @@ namespace GeosBeltTweaks
                 "Building",
                 "ToggleSlopeFromStartKey",
                 new KeyboardShortcut(KeyCode.Keypad1),
-                "Toggle sloping from the start while the belt tool is open. Belts rise or fall from their first segment instead of running one segment flat first. Applies immediately."
+                "Toggle sloping from the start while the belt tool is open. Belts rise or fall from their first segment instead of running one segment flat first. Works while holding other keys, such as Shift. Applies immediately."
             );
             ToggleHalfGridSnapKey.SettingChanged += ToggleKeyTip.HalfGrid.OnKeyChanged;
             ToggleSlopeFromStartKey.SettingChanged += ToggleKeyTip.SlopeFromStart.OnKeyChanged;
@@ -115,7 +116,9 @@ namespace GeosBeltTweaks
                 HalfGridBeltSnapPatch.HalfStep = false;
             }
 
-            if (ToggleSlopeFromStartKey.Value.IsDown())
+            // Unlike KeyboardShortcut.IsDown, ignore other held keys such as Shift.
+            KeyboardShortcut slopeKey = ToggleSlopeFromStartKey.Value;
+            if (Input.GetKeyDown(slopeKey.MainKey) && slopeKey.Modifiers.All(Input.GetKey))
             {
                 SlopeFromStartPatch.Enabled = !SlopeFromStartPatch.Enabled;
             }
