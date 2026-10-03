@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: release-${{ github.event.pull_request.number || github.ref }}
@@ -17,6 +18,9 @@ jobs:
   release:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    env:
+      INFISICAL_API_URL: https://infisical.jhands.dev
+      INFISICAL_PROJECT_ID: ${{ vars.INFISICAL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -34,18 +38,44 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - uses: jahands/setup-infisical@bc84101d9f5dbe045de35d7b053f3fa536ef3806 # v1
+        with:
+          version: 0.43.114
       - run: pnpm install --frozen-lockfile
       - run: bun run check
+      - name: Authenticate with Infisical
+        uses: Infisical/auth-action@bfe3dacda023af78349e300914a168e1fb766dbe # v1.0.0
+        with:
+          method: oidc
+          domain: https://infisical.jhands.dev
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          oidc-audience: https://github.com/jahands
+          output-env-credential: true
       - name: Build and validate mods
-        run: bun turbo build
+        run: |
+          NUGET_GITHUB_TOKEN="$(infisical secrets get NUGET_GITHUB_TOKEN --plain --silent --projectId "$INFISICAL_PROJECT_ID" --env=prod --path=/)"
+          echo "::add-mask::$NUGET_GITHUB_TOKEN"
+          export NUGET_GITHUB_TOKEN
+          bun turbo build
       - name: Install Thunderstore CLI
         if: github.ref == 'refs/heads/main'
         run: dotnet tool install --global tcli --version 0.2.4
+      - name: Authenticate with Infisical for publishing
+        if: github.ref == 'refs/heads/main'
+        uses: Infisical/auth-action@bfe3dacda023af78349e300914a168e1fb766dbe # v1.0.0
+        with:
+          method: oidc
+          domain: https://infisical.jhands.dev
+          identity-id: ${{ vars.INFISICAL_RELEASE_IDENTITY_ID }}
+          oidc-audience: https://github.com/jahands
+          output-env-credential: true
       - name: Publish new versions
         if: github.ref == 'refs/heads/main'
-        run: bun runx release
-        env:
-          TCLI_AUTH_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
+        run: |
+          TCLI_AUTH_TOKEN="$(infisical secrets get THUNDERSTORE_TOKEN --plain --silent --projectId "$INFISICAL_PROJECT_ID" --env=prod --path=/)"
+          echo "::add-mask::$TCLI_AUTH_TOKEN"
+          export TCLI_AUTH_TOKEN
+          bun runx release
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: thunderstore-packages
