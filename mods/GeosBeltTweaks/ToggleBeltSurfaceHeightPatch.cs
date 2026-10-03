@@ -10,6 +10,7 @@ namespace GeosBeltTweaks
     {
         // Only one belt tool is active; its open/close lifecycle bounds the remembered height.
         private static int _savedAltitude;
+        private static bool _savedHalfStep;
 
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(BuildTool_Path), nameof(BuildTool_Path.DeterminePreviews))]
@@ -60,16 +61,21 @@ namespace GeosBeltTweaks
             if (!Plugin.ToggleBeltSurfaceHeight.Value)
             {
                 _savedAltitude = 0;
+                _savedHalfStep = false;
+                HalfGridBeltSnapPatch.HalfStep = false;
                 return 0;
             }
 
-            if (tool.altitude == 0)
+            if (tool.altitude == 0 && !HalfGridBeltSnapPatch.HalfStep)
             {
+                HalfGridBeltSnapPatch.HalfStep = _savedHalfStep && HalfGridBeltSnapPatch.Enabled;
                 return _savedAltitude;
             }
 
             // Height keys run before the reset, so simultaneous input can exceed the build limits.
             _savedAltitude = Math.Max(0, Math.Min(60, tool.altitude));
+            _savedHalfStep = HalfGridBeltSnapPatch.HalfStep && _savedAltitude < 60;
+            HalfGridBeltSnapPatch.HalfStep = false;
             return 0;
         }
 
@@ -78,6 +84,7 @@ namespace GeosBeltTweaks
         private static void OnOpen()
         {
             _savedAltitude = 0;
+            _savedHalfStep = false;
         }
 
         [HarmonyPostfix]
@@ -85,6 +92,7 @@ namespace GeosBeltTweaks
         internal static void ClearSavedHeight()
         {
             _savedAltitude = 0;
+            _savedHalfStep = false;
         }
     }
 }

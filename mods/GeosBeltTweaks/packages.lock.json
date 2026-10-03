@@ -26,9 +26,20 @@
 			},
 			"DysonSphereProgram.GameLibs": {
 				"type": "Direct",
-				"requested": "[0.10.34.28347-r.0, )",
-				"resolved": "0.10.34.28347-r.0",
-				"contentHash": "B2pyD8Js8xIIDZjl4JRMcqQab6ZRuboaSSrPyB2yXzXmQCZejf8eBqPshh9aqvEw83Rgvwq9vHfw4X+AFRlw7Q=="
+				"requested": "[0.10.35.29088-r.0, )",
+				"resolved": "0.10.35.29088-r.0",
+				"contentHash": "R4ZwhP7ZSWvE61Un+BhrIy/NYM8ft2kbq947i/aekckr3sITIdHscTiSPq2eqLudY7GQVB/sEoI87oCLZNUOfg=="
+			},
+			"DysonSphereProgram.Modding.CommonAPI": {
+				"type": "Direct",
+				"requested": "[1.6.5, )",
+				"resolved": "1.6.5",
+				"contentHash": "1VJ3hNzvmmk6aekCF0RtmOl4vbaDtQscDNNDhIvpmMQEh3j1wESezWPPVyrQB4/+0uVlDgRoqTOJo6RS74XpIQ==",
+				"dependencies": {
+					"DysonSphereProgram.Modding.DSPModSave": "1.2.0",
+					"DysonSphereProgram.Modding.LDBTool": "3.0.0",
+					"DysonSphereProgram.Modding.NebulaMultiplayerModApi": "2.0.0"
+				}
 			},
 			"Microsoft.NETFramework.ReferenceAssemblies": {
 				"type": "Direct",
@@ -49,6 +60,21 @@
 				"type": "Transitive",
 				"resolved": "5.4.17",
 				"contentHash": "92N4BKDiF9KO8kXbY2+zp7dHNXZP3WBKhzw7U8orcYncutD7peHtuLfUdMW4PGY/d0SsoA5eOcBeklFuh7OS8A=="
+			},
+			"DysonSphereProgram.Modding.DSPModSave": {
+				"type": "Transitive",
+				"resolved": "1.2.0",
+				"contentHash": "i70jjFTXtvE0UfD2PLqlkkLhF317KrcVl1W/PFoza9nWsAZuz12pyVaUS6h35hkqVN4k8ZODkVn2UpFiVr07aw=="
+			},
+			"DysonSphereProgram.Modding.LDBTool": {
+				"type": "Transitive",
+				"resolved": "3.0.0",
+				"contentHash": "RY9gnVs6X6RQ5pdOrtEIYFuKijQXYZG8kcAeUEjZz+WvkmqI23igUhHFYrmTz25WGbtGzsle06fbG0K4bA0rZQ=="
+			},
+			"DysonSphereProgram.Modding.NebulaMultiplayerModApi": {
+				"type": "Transitive",
+				"resolved": "2.0.0",
+				"contentHash": "ExoBArVwtbUpn2r1tTSE12sPQVxeBzmzC3MqDMxuhZTz8wgEl2RLT/USLy7DDaoK7XMAjXi29DBjopxSmsYPMA=="
 			},
 			"HarmonyX": {
 				"type": "Transitive",
