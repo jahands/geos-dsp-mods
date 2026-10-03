@@ -112,7 +112,6 @@ const it = baseTest.extend<{
 				`)
 			)
 
-			// Concurrent first runs of the .NET SDK race to create NuGet's migration mutex.
 			for (const name of ['validator', 'fixture']) {
 				const args = [
 					'build',
