@@ -2,5 +2,9 @@
 	"name": "GeosBeltTweaks",
 	"description": "Geo's belt tweaks for Dyson Sphere Program",
 	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/GeosBeltTweaks",
-	"dependencies": ["xiaoye97-BepInEx-5.4.17", "CommonAPI-CommonAPI-1.6.7"]
+	"dependencies": [
+		"xiaoye97-BepInEx-5.4.17",
+		"CommonAPI-CommonAPI-1.6.7",
+		"CommonAPI-DSPModSave-1.2.2"
+	]
 }

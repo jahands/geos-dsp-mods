@@ -14,4 +14,6 @@ Quality-of-life tweaks for building belts in Dyson Sphere Program.
 | Unlimited chain upgrade range | Chain upgrading or downgrading a belt reaches the whole belt instead of stopping at the mecha's build range.                                                                      |
 | Chain upgrade across tiers    | Chain upgrading or downgrading a belt continues through tier changes and brings every segment to the tier the hovered segment ends up at, lowering or raising segments as needed. |
 
+Each save keeps whether half-grid snapping, slope from start, and free-angle mode are on through [DSPModSave](https://thunderstore.io/c/dyson-sphere-program/p/CommonAPI/DSPModSave/).
+
 Each tweak can be turned off in `BepInEx/config/com.geostyx.dsp.geosbelttweaks.cfg`.
