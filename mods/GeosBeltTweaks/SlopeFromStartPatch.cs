@@ -40,6 +40,27 @@ namespace GeosBeltTweaks
                 return;
             }
 
+            if (HalfGridBeltSnapPatch.Enabled && __result < snaps.Length - 10)
+            {
+                // Run flat for half a cell, then keep the slope by moving each later point to
+                // the average height of itself and its predecessor.
+                Vector3 start = snaps[0];
+                Vector3 halfCell = Vector3.Slerp(start.normalized, snaps[1].normalized, 0.5f) * start.magnitude;
+
+                // DeterminePreviews merges points closer than this, which would drop the flat point.
+                if ((halfCell - start).sqrMagnitude >= 0.28f)
+                {
+                    for (int i = __result; i >= 2; i--)
+                    {
+                        snaps[i] = snaps[i - 1].normalized * ((snaps[i - 1].magnitude + snaps[i - 2].magnitude) / 2f);
+                    }
+
+                    snaps[1] = halfCell;
+                    __result++;
+                    return;
+                }
+            }
+
             _snappingFlatStart = true;
             try
             {
