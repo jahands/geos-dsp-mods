@@ -112,20 +112,19 @@ const it = baseTest.extend<{
 				`)
 			)
 
-			await Promise.all(
-				['validator', 'fixture'].map((name) => {
-					const args = [
-						'build',
-						path.join(directory, `${name}.cs`),
-						'-o',
-						path.join(directory, name),
-						'--artifacts-path',
-						path.join(directory, `${name}-artifacts`),
-					]
+			// Concurrent first runs of the .NET SDK race to create NuGet's migration mutex.
+			for (const name of ['validator', 'fixture']) {
+				const args = [
+					'build',
+					path.join(directory, `${name}.cs`),
+					'-o',
+					path.join(directory, name),
+					'--artifacts-path',
+					path.join(directory, `${name}-artifacts`),
+				]
 
-					return $`${dotnet} ${args}`.quiet()
-				})
-			)
+				await $`${dotnet} ${args}`.quiet()
+			}
 
 			await provide({
 				directory,
