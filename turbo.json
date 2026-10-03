@@ -8,6 +8,7 @@
 		"build": {
 			"dependsOn": ["^build", "topo"],
 			"outputs": ["bin/**", "obj/**", "dist/**"],
+			"passThroughEnv": ["NUGET_GITHUB_TOKEN"],
 			"outputLogs": "new-only"
 		},
 		"check:types": {
