@@ -41,6 +41,12 @@
 					"DysonSphereProgram.Modding.NebulaMultiplayerModApi": "2.0.0"
 				}
 			},
+			"DysonSphereProgram.Modding.DSPModSave": {
+				"type": "Direct",
+				"requested": "[1.2.0, )",
+				"resolved": "1.2.0",
+				"contentHash": "i70jjFTXtvE0UfD2PLqlkkLhF317KrcVl1W/PFoza9nWsAZuz12pyVaUS6h35hkqVN4k8ZODkVn2UpFiVr07aw=="
+			},
 			"Microsoft.NETFramework.ReferenceAssemblies": {
 				"type": "Direct",
 				"requested": "[1.0.2, )",
@@ -60,11 +66,6 @@
 				"type": "Transitive",
 				"resolved": "5.4.17",
 				"contentHash": "92N4BKDiF9KO8kXbY2+zp7dHNXZP3WBKhzw7U8orcYncutD7peHtuLfUdMW4PGY/d0SsoA5eOcBeklFuh7OS8A=="
-			},
-			"DysonSphereProgram.Modding.DSPModSave": {
-				"type": "Transitive",
-				"resolved": "1.2.0",
-				"contentHash": "i70jjFTXtvE0UfD2PLqlkkLhF317KrcVl1W/PFoza9nWsAZuz12pyVaUS6h35hkqVN4k8ZODkVn2UpFiVr07aw=="
 			},
 			"DysonSphereProgram.Modding.LDBTool": {
 				"type": "Transitive",

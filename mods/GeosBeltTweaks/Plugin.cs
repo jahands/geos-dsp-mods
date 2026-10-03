@@ -1,8 +1,10 @@
+using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using CommonAPI;
 using CommonAPI.Systems.ModLocalization;
+using crecheng.DSPModSave;
 using HarmonyLib;
 using UnityEngine;
 
@@ -10,9 +12,12 @@ namespace GeosBeltTweaks
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     [BepInDependency(CommonAPIPlugin.GUID)]
+    [BepInDependency(DSPModSavePlugin.MODGUID)]
     [CommonAPISubmoduleDependency(nameof(LocalizationModule))]
-    public class Plugin : BaseUnityPlugin
+    public class Plugin : BaseUnityPlugin, IModCanSave
     {
+        private const int SaveVersion = 1;
+
         private Harmony? _harmony;
         internal static ManualLogSource Log = null!;
         internal static ConfigEntry<bool> MatchStartingBeltTier = null!;
@@ -131,6 +136,41 @@ namespace GeosBeltTweaks
             ToggleBeltSurfaceHeightPatch.ClearSavedHeight();
             ToggleKeyTip.HalfGrid.Destroy();
             ToggleKeyTip.SlopeFromStart.Destroy();
+        }
+
+        public void Export(BinaryWriter w)
+        {
+            w.Write(SaveVersion);
+            w.Write(HalfGridBeltSnapPatch.Enabled);
+            w.Write(SlopeFromStartPatch.Enabled);
+            w.Write(GameMain.mainPlayer?.controller.actionBuild.pathTool.geodesic ?? false);
+        }
+
+        public void Import(BinaryReader r)
+        {
+            int version = r.ReadInt32();
+            if (version > SaveVersion)
+            {
+                Log.LogWarning($"Ignoring belt tool modes saved by a newer version (save data version {version})");
+                IntoOtherSave();
+                return;
+            }
+
+            HalfGridBeltSnapPatch.Enabled = r.ReadBoolean();
+            HalfGridBeltSnapPatch.HalfStep = false;
+            SlopeFromStartPatch.Enabled = r.ReadBoolean();
+            bool freeAngle = r.ReadBoolean();
+            if (GameMain.mainPlayer != null)
+            {
+                GameMain.mainPlayer.controller.actionBuild.pathTool.geodesic = freeAngle;
+            }
+        }
+
+        public void IntoOtherSave()
+        {
+            HalfGridBeltSnapPatch.Enabled = false;
+            HalfGridBeltSnapPatch.HalfStep = false;
+            SlopeFromStartPatch.Enabled = false;
         }
     }
 }
