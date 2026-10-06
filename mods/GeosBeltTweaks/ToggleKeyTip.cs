@@ -17,6 +17,10 @@ namespace GeosBeltTweaks
             "GeosBeltTweaks slope from start on", "GeosBeltTweaks slope from start off"
         );
 
+        internal static readonly ToggleKeyTip BattleBaseConstruction = new(
+            "GeosBeltTweaks battle base construction on", "GeosBeltTweaks battle base construction off"
+        );
+
         internal readonly string OnText = onText;
         internal readonly string OffText = offText;
 
@@ -32,6 +36,7 @@ namespace GeosBeltTweaks
         {
             HalfGrid.Register(__instance);
             SlopeFromStart.Register(__instance);
+            BattleBaseConstruction.Register(__instance);
         }
 
         [HarmonyPostfix]
@@ -40,6 +45,12 @@ namespace GeosBeltTweaks
         {
             HalfGrid.Update(__instance, Plugin.ToggleHalfGridSnapKey.Value, HalfGridBeltSnapPatch.Enabled);
             SlopeFromStart.Update(__instance, Plugin.ToggleSlopeFromStartKey.Value, SlopeFromStartPatch.Enabled);
+            var factory = GameMain.localPlanet?.factory;
+            BattleBaseConstruction.Update(
+                __instance,
+                Plugin.ToggleBattleBaseConstructionKey.Value,
+                __instance.zeroKeyInBuildMode2.desired && factory != null && BattleBaseConstructionToggle.AnyEnabled(factory)
+            );
         }
 
         private void Register(UIKeyTips tips)
