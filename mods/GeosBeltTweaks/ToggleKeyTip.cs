@@ -45,12 +45,7 @@ namespace GeosBeltTweaks
         {
             HalfGrid.Update(__instance, Plugin.ToggleHalfGridSnapKey.Value, HalfGridBeltSnapPatch.Enabled);
             SlopeFromStart.Update(__instance, Plugin.ToggleSlopeFromStartKey.Value, SlopeFromStartPatch.Enabled);
-            var factory = GameMain.localPlanet?.factory;
-            BattleBaseConstruction.Update(
-                __instance,
-                Plugin.ToggleBattleBaseConstructionKey.Value,
-                __instance.zeroKeyInBuildMode2.desired && factory != null && BattleBaseConstructionToggle.AnyEnabled(factory)
-            );
+            BattleBaseConstruction.Update(__instance, Plugin.ToggleBattleBaseConstructionKey.Value, !PauseBattleBaseBuildingPatch.Enabled);
         }
 
         private void Register(UIKeyTips tips)
