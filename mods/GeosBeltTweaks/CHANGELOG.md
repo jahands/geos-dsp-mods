@@ -1,5 +1,17 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.7.0
+
+### Minor Changes
+
+- bc90ccd: feat: toggle building by Battlefield Analysis Bases while the belt tool is open with the numpad 2 key
+  
+  Only bases on the current planet pause, and they resume building when the belt tool closes.
+
+### Patch Changes
+
+- 08674a5: chore: shorten the tweak descriptions in the README and config
+
 ## 0.6.0
 
 ### Minor Changes
