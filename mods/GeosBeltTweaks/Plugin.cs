@@ -29,6 +29,7 @@ namespace GeosBeltTweaks
         internal static ConfigEntry<bool> ChainUpgradeAcrossTiers = null!;
         internal static ConfigEntry<KeyboardShortcut> ToggleHalfGridSnapKey = null!;
         internal static ConfigEntry<KeyboardShortcut> ToggleSlopeFromStartKey = null!;
+        internal static ConfigEntry<KeyboardShortcut> ToggleBattleBaseConstructionKey = null!;
 
         private void Awake()
         {
@@ -37,62 +38,71 @@ namespace GeosBeltTweaks
                 "Building",
                 "MatchStartingBeltHeight",
                 true,
-                "Match the height of the belt or splitter you start from, rounded to the nearest build level. Applies to the next belt you start."
+                "Start new belts at the height of the belt or splitter you drag from."
             );
             MatchStartingBeltTier = Config.Bind(
                 "Building",
                 "MatchStartingBeltTier",
                 true,
-                "Use the starting belt's tier when extending it. Applies to the next belt you start."
+                "Select the starting belt's tier when extending it."
             );
             ShowBeltPreviewTilt = Config.Bind(
                 "Building",
                 "ShowBeltPreviewTilt",
                 true,
-                "Show the belt's slope and tilt in belt previews. Applies immediately."
+                "Show slope and tilt in belt previews."
             );
             ToggleBeltSurfaceHeight = Config.Bind(
                 "Building",
                 "ToggleBeltSurfaceHeight",
                 true,
-                "Toggle between the surface and the previous belt height with the reset-height hotkey (numpad 0 by default). Applies immediately."
+                "The reset-height key toggles between the surface and the previous height."
             );
             RememberBeltFreeAngleMode = Config.Bind(
                 "Building",
                 "RememberBeltFreeAngleMode",
                 true,
-                "Keep free-angle mode selected when reopening the belt tool."
+                "Keep free-angle mode on when reopening the belt tool."
             );
             UnlimitedChainUpgradeRange = Config.Bind(
                 "Building",
                 "UnlimitedChainUpgradeRange",
                 true,
-                "Chain upgrading or downgrading a belt reaches the whole belt instead of stopping at the mecha's build range. Applies immediately."
+                "Chain upgrades reach the whole belt, ignoring build range."
             );
             ChainUpgradeAcrossTiers = Config.Bind(
                 "Building",
                 "ChainUpgradeAcrossTiers",
                 true,
-                "Chain upgrading or downgrading a belt continues through tier changes and brings every segment to the tier the hovered segment ends up at. Applies immediately."
+                "Chain upgrades continue through tier changes."
             );
             ToggleHalfGridSnapKey = Config.Bind(
                 "Building",
                 "ToggleHalfGridSnapKey",
                 new KeyboardShortcut(KeyCode.BackQuote),
-                "Toggle half-grid snapping while the belt tool is open. Belts snap to half grid cells, and the height keys move half a level. Applies immediately."
+                "Toggles half-grid snapping in the belt tool."
             );
             ToggleSlopeFromStartKey = Config.Bind(
                 "Building",
                 "ToggleSlopeFromStartKey",
                 new KeyboardShortcut(KeyCode.Keypad1),
-                "Toggle sloping from the start while the belt tool is open. Belts rise or fall from their first segment instead of running one segment flat first. Applies immediately."
+                "Toggles sloping from the first segment in the belt tool."
+            );
+            ToggleBattleBaseConstructionKey = Config.Bind(
+                "Building",
+                "ToggleBattleBaseConstructionKey",
+                new KeyboardShortcut(KeyCode.Keypad2),
+                "Toggles building by Battlefield Analysis Bases on the planet in the belt tool."
             );
             ToggleHalfGridSnapKey.SettingChanged += ToggleKeyTip.HalfGrid.OnKeyChanged;
             ToggleSlopeFromStartKey.SettingChanged += ToggleKeyTip.SlopeFromStart.OnKeyChanged;
+            ToggleBattleBaseConstructionKey.SettingChanged += ToggleKeyTip.BattleBaseConstruction.OnKeyChanged;
             LocalizationModule.RegisterTranslation(ToggleKeyTip.HalfGrid.OnText, "Half-grid: on", "半格：开", "");
             LocalizationModule.RegisterTranslation(ToggleKeyTip.HalfGrid.OffText, "Half-grid: off", "半格：关", "");
             LocalizationModule.RegisterTranslation(ToggleKeyTip.SlopeFromStart.OnText, "Slope from start: on", "起点起坡：开", "");
             LocalizationModule.RegisterTranslation(ToggleKeyTip.SlopeFromStart.OffText, "Slope from start: off", "起点起坡：关", "");
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.BattleBaseConstruction.OnText, "BAB construction: on", "战场分析基站建设：开", "");
+            LocalizationModule.RegisterTranslation(ToggleKeyTip.BattleBaseConstruction.OffText, "BAB construction: off", "战场分析基站建设：关", "");
             _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             try
             {
@@ -124,18 +134,25 @@ namespace GeosBeltTweaks
             {
                 SlopeFromStartPatch.Enabled = !SlopeFromStartPatch.Enabled;
             }
+
+            if (ToggleBattleBaseConstructionKey.Value.IsDown() && GameMain.localPlanet?.factory is { } factory)
+            {
+                BattleBaseConstructionToggle.Toggle(factory, GameMain.mainPlayer);
+            }
         }
 
         private void OnDestroy()
         {
             ToggleHalfGridSnapKey.SettingChanged -= ToggleKeyTip.HalfGrid.OnKeyChanged;
             ToggleSlopeFromStartKey.SettingChanged -= ToggleKeyTip.SlopeFromStart.OnKeyChanged;
+            ToggleBattleBaseConstructionKey.SettingChanged -= ToggleKeyTip.BattleBaseConstruction.OnKeyChanged;
             _harmony?.UnpatchSelf();
             _harmony = null;
             BeltPreviewTiltPatch.Release();
             ToggleBeltSurfaceHeightPatch.ClearSavedHeight();
             ToggleKeyTip.HalfGrid.Destroy();
             ToggleKeyTip.SlopeFromStart.Destroy();
+            ToggleKeyTip.BattleBaseConstruction.Destroy();
         }
 
         public void Export(BinaryWriter w)
