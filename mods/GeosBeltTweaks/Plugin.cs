@@ -16,7 +16,7 @@ namespace GeosBeltTweaks
     [CommonAPISubmoduleDependency(nameof(LocalizationModule))]
     public class Plugin : BaseUnityPlugin, IModCanSave
     {
-        private const int SaveVersion = 1;
+        private const int SaveVersion = 2;
 
         private Harmony? _harmony;
         internal static ManualLogSource Log = null!;
@@ -92,7 +92,7 @@ namespace GeosBeltTweaks
                 "Building",
                 "ToggleBattleBaseConstructionKey",
                 new KeyboardShortcut(KeyCode.Keypad2),
-                "Toggles building by Battlefield Analysis Bases on the planet in the belt tool."
+                "Toggles building by Battlefield Analysis Bases on the planet while the belt tool is open."
             );
             ToggleHalfGridSnapKey.SettingChanged += ToggleKeyTip.HalfGrid.OnKeyChanged;
             ToggleSlopeFromStartKey.SettingChanged += ToggleKeyTip.SlopeFromStart.OnKeyChanged;
@@ -119,6 +119,7 @@ namespace GeosBeltTweaks
 
         private void Update()
         {
+            PauseBattleBaseBuildingPatch.Update();
             if (VFInput.inputing || GameMain.mainPlayer?.controller.actionBuild.activeTool is not BuildTool_Path)
             {
                 return;
@@ -135,9 +136,9 @@ namespace GeosBeltTweaks
                 SlopeFromStartPatch.Enabled = !SlopeFromStartPatch.Enabled;
             }
 
-            if (ToggleBattleBaseConstructionKey.Value.IsDown() && GameMain.localPlanet?.factory is { } factory)
+            if (ToggleBattleBaseConstructionKey.Value.IsDown())
             {
-                BattleBaseConstructionToggle.Toggle(factory, GameMain.mainPlayer);
+                PauseBattleBaseBuildingPatch.Enabled = !PauseBattleBaseBuildingPatch.Enabled;
             }
         }
 
@@ -161,6 +162,7 @@ namespace GeosBeltTweaks
             w.Write(HalfGridBeltSnapPatch.Enabled);
             w.Write(SlopeFromStartPatch.Enabled);
             w.Write(GameMain.mainPlayer?.controller.actionBuild.pathTool.geodesic ?? false);
+            w.Write(PauseBattleBaseBuildingPatch.Enabled);
         }
 
         public void Import(BinaryReader r)
@@ -177,6 +179,7 @@ namespace GeosBeltTweaks
             HalfGridBeltSnapPatch.HalfStep = false;
             SlopeFromStartPatch.Enabled = r.ReadBoolean();
             bool freeAngle = r.ReadBoolean();
+            PauseBattleBaseBuildingPatch.Enabled = version >= 2 && r.ReadBoolean();
             if (GameMain.mainPlayer != null)
             {
                 GameMain.mainPlayer.controller.actionBuild.pathTool.geodesic = freeAngle;
@@ -188,6 +191,7 @@ namespace GeosBeltTweaks
             HalfGridBeltSnapPatch.Enabled = false;
             HalfGridBeltSnapPatch.HalfStep = false;
             SlopeFromStartPatch.Enabled = false;
+            PauseBattleBaseBuildingPatch.Enabled = false;
         }
     }
 }
