@@ -1,6 +1,6 @@
-# Geo's Belt Tweaks
+# GeosBeltTweaks
 
-Quality-of-life tweaks for building belts in Dyson Sphere Program.
+Quality-of-life tweaks for building belts.
 
 | Tweak                         | Effect                                                                                             |
 | ----------------------------- | -------------------------------------------------------------------------------------------------- |

@@ -1,6 +1,6 @@
-# Quick Save
+# QuickSave
 
-Quick-save and quick-load hotkeys for Dyson Sphere Program.
+Quick-save and quick-load hotkeys.
 
 | Key | Effect                                            |
 | --- | ------------------------------------------------- |
@@ -10,3 +10,5 @@ Quick-save and quick-load hotkeys for Dyson Sphere Program.
 With [CompressSave](https://thunderstore.io/c/dyson-sphere-program/p/soarqin/CompressSave/) installed, quicksaves are compressed.
 
 Change the keys in `BepInEx/config/com.geostyx.dsp.quicksave.cfg`.
+
+See also: [CameraMemory](https://thunderstore.io/c/dyson-sphere-program/p/Geostyx/CameraMemory/)

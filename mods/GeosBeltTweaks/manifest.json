@@ -1,6 +1,6 @@
 {
 	"name": "GeosBeltTweaks",
-	"description": "Geo's belt tweaks for Dyson Sphere Program",
+	"description": "Quality-of-life tweaks for building belts",
 	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/GeosBeltTweaks",
 	"dependencies": [
 		"xiaoye97-BepInEx-5.4.17",
