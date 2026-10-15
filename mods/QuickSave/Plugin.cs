@@ -66,6 +66,12 @@ namespace QuickSave
                 return;
             }
 
+            // The build menu uses F1-F10 to pick items and filters while a category is open.
+            if (UIRoot.instance.uiGame.buildMenu.currentCategory != 0)
+            {
+                return;
+            }
+
             if (_quickSaveKey.Value.IsDown())
             {
                 QuickSave();
