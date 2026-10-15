@@ -1,6 +1,6 @@
 {
 	"name": "QuickSave",
-	"description": "Quick-save and quick-load hotkeys for Dyson Sphere Program",
+	"description": "Quick-save and quick-load hotkeys",
 	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/QuickSave",
 	"dependencies": ["xiaoye97-BepInEx-5.4.17"]
 }

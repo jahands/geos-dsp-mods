@@ -2,7 +2,7 @@
 	"name": "@repo/dsp-mod-quicksave",
 	"version": "0.1.0",
 	"private": true,
-	"description": "Quick-save and quick-load hotkeys for Dyson Sphere Program",
+	"description": "Quick-save and quick-load hotkeys",
 	"sideEffects": false,
 	"scripts": {
 		"build": "runx build dotnet-dsp"

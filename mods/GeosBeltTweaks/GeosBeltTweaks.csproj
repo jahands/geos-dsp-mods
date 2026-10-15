@@ -4,8 +4,8 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>GeosBeltTweaks</AssemblyName>
     <RootNamespace>GeosBeltTweaks</RootNamespace>
-    <Product>Geo's Belt Tweaks</Product>
-    <Description>Geo's belt tweaks for Dyson Sphere Program</Description>
+    <Product>GeosBeltTweaks</Product>
+    <Description>Quality-of-life tweaks for building belts</Description>
     <BepInExPluginGuid>com.geostyx.dsp.geosbelttweaks</BepInExPluginGuid>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

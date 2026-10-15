@@ -4,8 +4,8 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>QuickSave</AssemblyName>
     <RootNamespace>QuickSave</RootNamespace>
-    <Product>Quick Save</Product>
-    <Description>Quick-save and quick-load hotkeys for Dyson Sphere Program</Description>
+    <Product>QuickSave</Product>
+    <Description>Quick-save and quick-load hotkeys</Description>
     <BepInExPluginGuid>com.geostyx.dsp.quicksave</BepInExPluginGuid>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

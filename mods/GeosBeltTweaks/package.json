@@ -2,7 +2,7 @@
 	"name": "@repo/dsp-mod-geosbelttweaks",
 	"version": "0.7.0",
 	"private": true,
-	"description": "Geo's belt tweaks for Dyson Sphere Program",
+	"description": "Quality-of-life tweaks for building belts",
 	"sideEffects": false,
 	"scripts": {
 		"build": "runx build dotnet-dsp"
