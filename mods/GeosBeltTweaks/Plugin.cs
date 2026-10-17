@@ -178,12 +178,8 @@ namespace GeosBeltTweaks
             HalfGridBeltSnapPatch.Enabled = r.ReadBoolean();
             HalfGridBeltSnapPatch.HalfStep = false;
             SlopeFromStartPatch.Enabled = r.ReadBoolean();
-            bool freeAngle = r.ReadBoolean();
+            RememberBeltFreeAngleModePatch.LoadedFreeAngle = r.ReadBoolean();
             PauseBattleBaseBuildingPatch.Enabled = version >= 2 && r.ReadBoolean();
-            if (GameMain.mainPlayer != null)
-            {
-                GameMain.mainPlayer.controller.actionBuild.pathTool.geodesic = freeAngle;
-            }
         }
 
         public void IntoOtherSave()
@@ -191,6 +187,7 @@ namespace GeosBeltTweaks
             HalfGridBeltSnapPatch.Enabled = false;
             HalfGridBeltSnapPatch.HalfStep = false;
             SlopeFromStartPatch.Enabled = false;
+            RememberBeltFreeAngleModePatch.LoadedFreeAngle = false;
             PauseBattleBaseBuildingPatch.Enabled = false;
         }
     }
