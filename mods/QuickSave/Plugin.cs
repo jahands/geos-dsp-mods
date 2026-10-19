@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Bootstrap;
@@ -16,6 +17,7 @@ namespace QuickSave
 
         private ConfigEntry<KeyboardShortcut> _quickSaveKey = null!;
         private ConfigEntry<KeyboardShortcut> _quickLoadKey = null!;
+        private ConfigEntry<int> _quickSaveCount = null!;
 
         // CompressSave.PatchSave members that its compressed-save button sets before a manual save.
         private FieldInfo? _useCompressSave;
@@ -28,13 +30,22 @@ namespace QuickSave
                 "Hotkeys",
                 "QuickSaveKey",
                 new KeyboardShortcut(KeyCode.F5),
-                $"Saves the game as \"{SaveName}\"."
+                "Saves the game over the oldest quicksave."
             );
             _quickLoadKey = Config.Bind(
                 "Hotkeys",
                 "QuickLoadKey",
                 new KeyboardShortcut(KeyCode.F9),
-                $"Loads the \"{SaveName}\" save."
+                "Loads the newest quicksave."
+            );
+            _quickSaveCount = Config.Bind(
+                "Saves",
+                "QuickSaveCount",
+                5,
+                new ConfigDescription(
+                    "Number of quicksaves to keep.",
+                    new AcceptableValueRange<int>(1, 20)
+                )
             );
             if (Chainloader.PluginInfos.TryGetValue(CompressSaveGuid, out PluginInfo compressSave))
             {
@@ -93,7 +104,7 @@ namespace QuickSave
             bool loaded =
                 (GameMain.localStar == null || GameMain.localStar.loaded)
                 && (GameMain.localPlanet == null || (GameMain.localPlanet.loaded && GameMain.localPlanet.factoryLoaded));
-            bool saved = loaded && SaveGame();
+            bool saved = loaded && SaveGame(SlotName(OldestSlot()));
             if (saved)
             {
                 UIAutoSave.lastSaveTick = GameMain.gameTick;
@@ -106,18 +117,18 @@ namespace QuickSave
             UIRealtimeTip.Popup((saved ? "保存成功" : "保存失败").Translate(), sound: !saved);
         }
 
-        private bool SaveGame()
+        private bool SaveGame(string name)
         {
             if (_useCompressSave == null || !(bool)_enableCompress!.GetValue(null))
             {
-                return GameSave.SaveCurrentGame(SaveName);
+                return GameSave.SaveCurrentGame(name);
             }
 
             _useCompressSave.SetValue(null, true);
             _useCommonSaveCompressionType!.Invoke(null, null);
             try
             {
-                return GameSave.SaveCurrentGame(SaveName);
+                return GameSave.SaveCurrentGame(name);
             }
             finally
             {
@@ -126,22 +137,59 @@ namespace QuickSave
             }
         }
 
+        private int OldestSlot()
+        {
+            int oldest = 1;
+            for (int slot = 2; slot <= _quickSaveCount.Value; slot++)
+            {
+                if (SaveTime(slot) < SaveTime(oldest))
+                {
+                    oldest = slot;
+                }
+            }
+
+            return oldest;
+        }
+
+        private int NewestSlot()
+        {
+            int newest = 1;
+            for (int slot = 2; slot <= _quickSaveCount.Value; slot++)
+            {
+                if (SaveTime(slot) > SaveTime(newest))
+                {
+                    newest = slot;
+                }
+            }
+
+            return newest;
+        }
+
+        private static string SlotName(int slot) => $"{SaveName}_{slot}";
+
+        private static DateTime SaveTime(int slot)
+        {
+            string path = GameSave.SavePath(SlotName(slot));
+            return File.Exists(path) ? File.GetLastWriteTimeUtc(path) : DateTime.MinValue;
+        }
+
         private void QuickLoad()
         {
-            if (!GameSave.SaveExist(SaveName))
+            string name = SlotName(NewestSlot());
+            if (!GameSave.SaveExist(name))
             {
                 UIRealtimeTip.Popup("No quicksave");
                 return;
             }
 
-            GameDesc? desc = GameSave.LoadGameDesc(SaveName);
+            GameDesc? desc = GameSave.LoadGameDesc(name);
             if (desc == null)
             {
                 UIRealtimeTip.Popup("无效存档".Translate());
                 return;
             }
 
-            DSPGame.StartGame(SaveName);
+            DSPGame.StartGame(name);
             DSPGame.WillEnableSandboxTools = desc.isSandboxMode;
             DSPGame.LoadWithGoalLevel = desc.goalLevel;
             DSPGame.RecordPlayVersion();
