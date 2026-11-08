@@ -56,7 +56,7 @@ namespace GeosBeltTweaks
                 "Building",
                 "ToggleBeltSurfaceHeight",
                 true,
-                "The reset-height key toggles between the surface and the previous height."
+                "The game's reset-height key toggles between the surface and the previous height."
             );
             RememberBeltFreeAngleMode = Config.Bind(
                 "Building",
@@ -80,19 +80,19 @@ namespace GeosBeltTweaks
                 "Building",
                 "ToggleHalfGridSnapKey",
                 new KeyboardShortcut(KeyCode.BackQuote),
-                "Toggles half-grid snapping in the belt tool."
+                "Toggles half-grid snapping."
             );
             ToggleSlopeFromStartKey = Config.Bind(
                 "Building",
                 "ToggleSlopeFromStartKey",
                 new KeyboardShortcut(KeyCode.Keypad1),
-                "Toggles sloping from the first segment in the belt tool."
+                "Toggles slope from start."
             );
             ToggleBattleBaseConstructionKey = Config.Bind(
                 "Building",
                 "ToggleBattleBaseConstructionKey",
                 new KeyboardShortcut(KeyCode.Keypad2),
-                "Toggles building by Battlefield Analysis Bases on the planet while the belt tool is open."
+                "Toggles the base building pause."
             );
             ToggleHalfGridSnapKey.SettingChanged += ToggleKeyTip.HalfGrid.OnKeyChanged;
             ToggleSlopeFromStartKey.SettingChanged += ToggleKeyTip.SlopeFromStart.OnKeyChanged;

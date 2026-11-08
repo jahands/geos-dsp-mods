@@ -1,6 +1,6 @@
 {
 	"name": "GeosBeltTweaks",
-	"description": "Quality-of-life tweaks for building belts",
+	"description": "Adds half-grid snapping, sloped belt starts, height and tier matching, and whole-belt chain upgrades",
 	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/GeosBeltTweaks",
 	"dependencies": [
 		"xiaoye97-BepInEx-5.4.17",

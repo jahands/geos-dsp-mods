@@ -30,7 +30,7 @@ namespace QuickSave
                 "Hotkeys",
                 "QuickSaveKey",
                 new KeyboardShortcut(KeyCode.F5),
-                "Saves the game over the oldest quicksave."
+                "Saves the game, replacing the oldest quicksave."
             );
             _quickLoadKey = Config.Bind(
                 "Hotkeys",
