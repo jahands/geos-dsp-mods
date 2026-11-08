@@ -1,5 +1,12 @@
 # @repo/dsp-mod-geosbelttweaks
 
+## 0.7.1
+
+### Patch Changes
+
+- 576873e: chore: name the mod GeosBeltTweaks in the README title and plugin name, and match the description to the README
+- 426e5cb: fix: restore free-angle mode when loading a save
+
 ## 0.7.0
 
 ### Minor Changes

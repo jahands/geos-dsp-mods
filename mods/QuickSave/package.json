@@ -1,6 +1,6 @@
 {
 	"name": "@repo/dsp-mod-quicksave",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"private": true,
 	"description": "Quick-save and quick-load hotkeys",
 	"sideEffects": false,

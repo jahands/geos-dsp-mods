@@ -1,0 +1,13 @@
+{
+	"name": "@repo/dsp-mod-cameramemory",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Saves your camera angle and zoom with each save and restores them when you load it",
+	"sideEffects": false,
+	"scripts": {
+		"build": "runx build dotnet-dsp"
+	},
+	"devDependencies": {
+		"@repo/tools": "workspace:*"
+	}
+}
