@@ -1,6 +1,6 @@
 {
 	"name": "CameraMemory",
 	"description": "Saves your camera angle and zoom with each save and restores them when you load it",
-	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/CameraMemory",
+	"website_url": "https://github.com/uuid-rocks/geos-dsp-mods/tree/main/mods/CameraMemory",
 	"dependencies": ["xiaoye97-BepInEx-5.4.17", "CommonAPI-DSPModSave-1.2.2"]
 }

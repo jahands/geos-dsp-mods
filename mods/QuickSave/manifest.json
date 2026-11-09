@@ -1,6 +1,6 @@
 {
 	"name": "QuickSave",
 	"description": "Quicksave and quickload hotkeys",
-	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/QuickSave",
+	"website_url": "https://github.com/uuid-rocks/geos-dsp-mods/tree/main/mods/QuickSave",
 	"dependencies": ["xiaoye97-BepInEx-5.4.17"]
 }
