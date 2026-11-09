@@ -49,7 +49,7 @@ jobs:
           method: oidc
           domain: https://infisical.jhands.dev
           identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
-          oidc-audience: https://github.com/jahands
+          oidc-audience: https://github.com/uuid-rocks
           output-env-credential: true
       - name: Build and validate mods
         run: |
@@ -67,7 +67,7 @@ jobs:
           method: oidc
           domain: https://infisical.jhands.dev
           identity-id: ${{ vars.INFISICAL_RELEASE_IDENTITY_ID }}
-          oidc-audience: https://github.com/jahands
+          oidc-audience: https://github.com/uuid-rocks
           output-env-credential: true
       - name: Publish new versions
         if: github.ref == 'refs/heads/main'
