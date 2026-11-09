@@ -1,7 +1,7 @@
 {
 	"name": "GeosBeltTweaks",
 	"description": "Adds half-grid snapping, sloped belt starts, height and tier matching, and whole-belt chain upgrades",
-	"website_url": "https://github.com/jahands/geos-dsp-mods/tree/main/mods/GeosBeltTweaks",
+	"website_url": "https://github.com/uuid-rocks/geos-dsp-mods/tree/main/mods/GeosBeltTweaks",
 	"dependencies": [
 		"xiaoye97-BepInEx-5.4.17",
 		"CommonAPI-CommonAPI-1.6.7",
